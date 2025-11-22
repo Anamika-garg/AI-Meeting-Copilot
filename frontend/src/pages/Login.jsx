@@ -183,7 +183,7 @@ const Login = () => {
         </div>
         <div className="hero-image-container">
           <img 
-            src="/api/placeholder/400/300" 
+            src="logo.jpeg" 
             alt="Login Visual" 
             className="aesthetic-img"
             style={{background: 'rgba(255,255,255,0.1)'}}

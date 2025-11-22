@@ -261,7 +261,7 @@ const Signup = () => {
         <div className="hero-image-container">
           {/* REPLACE 'your-image-url.png' with the actual image you generated */}
           <img 
-            src="prettyImg.png" 
+            src="prettyImg.jpg" 
             alt="Dashboard Preview" 
             className="aesthetic-img"
             style={{background: 'rgba(255,255,255,0.1)'}} // Placeholder background
