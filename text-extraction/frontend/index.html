@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Meeting Extractor</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container{max-width:900px;margin:auto;}
+    table { width:100%; border-collapse: collapse; margin-top: 10px;}
+    th,td{border:1px solid #ddd;padding:8px;text-align:left;}
+    th{background:#f4f4f4;}
+    .btn{padding:8px 12px;margin:6px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Meeting Task Extractor (Gemini)</h2>
+    <input type="file" id="fileInput" accept=".txt" />
+    <button id="uploadBtn" class="btn">Extract</button>
+    <div id="status"></div>
+
+    <h3>Output</h3>
+    <pre id="rawJson" style="white-space:pre-wrap;background:#fafafa;padding:10px;border:1px solid #eee;"></pre>
+
+    <button id="downloadJson" class="btn">Download JSON</button>
+    <button id="downloadCsv" class="btn">Download CSV</button>
+
+    <h3>Tasks</h3>
+    <table id="tasksTable">
+      <thead>
+        <tr><th>Task</th><th>Assigned To</th><th>Team</th><th>Priority</th><th>Deadline</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

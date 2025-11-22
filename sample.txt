@@ -1,0 +1,44 @@
+(Team Meeting - 22 Nov 2025)
+
+**Priya:** Okay guys, let's start. So first, the login bug — it's still crashing when a user tries to reset password. Amit, you looked into it right?
+
+**Amit:** Yeah, I checked. Seems like the token expiry logic is wrong. I’ll fix it. Should be done before Friday, I think.
+
+**Riya:** Can we also update the dashboard UI? The "Tasks Overview" card looks dated. I’ll redesign it, but I need access to Figma library.
+
+**Arjun:** I’ll give Riya access after the meeting.
+
+**Priya:** Okay perfect. Also, the mobile optimization for homepage — this has been pending for a while. Who can take it?
+
+**Sneha:** I can do it, but I’ll need backend support for API pagination.
+
+**Amit:** Sure, I’ll help Sneha, but not this week. Maybe early next week.
+
+**Priya:** So deadline for mobile optimization is… the end of next sprint. That’s December 5th.
+
+**Deepak:** Also the deployment pipeline is failing on staging because of missing environment variables. Someone needs to fix that urgently.
+
+**Arjun:** I’ll handle it. Should be done by tomorrow morning.
+
+**Priya:** Great. Another thing — documentation for new onboarding flow is still incomplete.
+
+**Sneha:** Oh yesss... sorry I forgot. I’ll finish it this weekend.
+
+**Riya:** Can we also add dark mode toggle? Users asked twice last week.
+
+**Priya:** Let’s put that as a low-priority backlog item for now.
+
+**Deepak:** Also replace the test database — it's still using dummy 2023 data.
+
+**Priya:** Yes, that must be updated. Who wants it?
+
+**Amit:** I can, but only after login bug is done.
+
+**Priya:** Alright noted.
+
+**Riya:** And someone remind me to send assets to marketing…
+
+**Priya:** Add it as a task. No one remembers later. 😂
+
+
+//// End of Notes ////
