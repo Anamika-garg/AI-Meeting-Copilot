@@ -1,9 +1,9 @@
 const express = require("express");
-const Meeting = require("../models/Meeting");
-const Task = require("../models/Task");
-const { extractTasksFromTranscript } = require("../services/openaiService");
-const { sendEmail } = require("../services/emailService");
-const { createJiraIssue } = require("../services/jiraService");
+const Meeting = require("../models/meeting");
+const Task = require("../models/task");
+const { extractTasksFromTranscript } = require("../services/geminiservice");
+const { sendEmail } = require("../services/emailservice");
+const { createJiraIssue } = require("../services/jiraservice");
 
 const router = express.Router();
 

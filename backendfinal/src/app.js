@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-const meetingRoutes = require("./routes/meetingRoutes");
-const taskRoutes = require("./routes/taskRoutes");
+const meetingRoutes = require("./routes/meetingroutes");
+const taskRoutes = require("./routes/taskroutes");
 
 const app = express();
 

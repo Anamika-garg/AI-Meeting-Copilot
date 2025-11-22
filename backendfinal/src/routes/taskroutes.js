@@ -1,6 +1,6 @@
 const express = require("express");
-const Task = require("../models/Task");
-const { sendEmail } = require("../services/emailService");
+const Task = require("../models/task");
+const { sendEmail } = require("../services/emailservice");
 // const { assignJiraIssue } = require("../services/jiraService"); // if you have accountId
 
 const router = express.Router();
