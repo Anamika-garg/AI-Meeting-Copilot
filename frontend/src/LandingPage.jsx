@@ -24,14 +24,14 @@ export default function LandingPage() {
           </div>
 
           {/* LOGIN BUTTON */}
-          <button className="px-4 py-2 bg-[#004D40] text-white rounded-lg font-semibold hover:bg-[#004D40] transition">
+          <Link to="/login" className="px-4 py-2 bg-[#004D40] text-white rounded-lg font-semibold hover:bg-[#004D40] transition">
             Login
-          </button>
+          </Link>
 
           {/* SIGNUP BUTTON */}
-          <button className="px-4 py-2 bg-[#004D40] text-white rounded-lg font-semibold hover:bg-[#004D40] transition">
+          <Link to="/signup" className="px-4 py-2 bg-[#004D40] text-white rounded-lg font-semibold hover:bg-[#004D40] transition">
             Sign Up
-          </button>
+          </Link>
 
         </div>
       </nav>
