@@ -1,18 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "AI Meeting Assistant",
+  "name": "AI Live Meeting Transcriber",
   "version": "1.0",
-  "description": "Auto-capture Google Meet transcript and send to AI backend (Jira/email)",
-  "icons": { "128": "assets/icon.png" },
-  "permissions": ["scripting","storage","tabs","activeTab"],
-  "host_permissions": ["https://meet.google.com/*", "https://YOUR_BACKEND_DOMAIN/*"],
-  "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup.html", "default_icon": "assets/icon.png" },
-  "content_scripts": [
-    {
-      "matches": ["https://meet.google.com/*"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
-    }
-  ]
+  "description": "Records microphone audio in meetings and sends to backend for transcription + task extraction.",
+  "permissions": ["microphone", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
 }

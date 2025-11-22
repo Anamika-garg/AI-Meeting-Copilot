@@ -7,7 +7,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = process.env.MODEL || "gemini-2.5-flash";
+const MODEL = "gemini-2.5-flash";
 
 if (!API_KEY) {
   console.error("❌ Set GEMINI_API_KEY in .env");
@@ -114,7 +114,6 @@ app.post("/extract", async (req, res) => {
 });
 
 
-// ---------- Start Server ----------
 app.listen(PORT, () =>
   console.log(`🚀 Backend running at http://localhost:${PORT} using model: ${MODEL}`)
 );

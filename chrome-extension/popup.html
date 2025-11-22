@@ -1,12 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head><meta charset="utf-8"><title>AI Meeting Assistant</title></head>
-  <body>
-    <h4>AI Meeting Assistant</h4>
-    <div>
-      <button id="statusBtn">Status</button>
-      <div id="status"></div>
-    </div>
-    <script src="popup.js"></script>
-  </body>
+<head>
+  <style>
+    body {
+      width: 300px;
+      font-family: Arial;
+      padding: 12px;
+    }
+    #recordBtn {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #recordBtn:hover {
+      background: #0056c7;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #transcript, #tasks {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .task-item { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+  <button id="recordBtn">Start Recording</button>
+  <p id="status"></p>
+
+  <h3>Transcript</h3>
+  <div id="transcript">No transcript yet</div>
+
+  <h3>Extracted Tasks</h3>
+  <div id="tasks">No tasks yet</div>
+
+  <script src="popup.js"></script>
+</body>
 </html>
