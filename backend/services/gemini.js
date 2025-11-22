@@ -5,9 +5,8 @@ import { GoogleGenerativeAI, Type } from "@google/generative-ai";
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
- * Summarizes a meeting transcript and extracts action items into a JSON object.
- * @param {string} transcript The meeting transcript text.
- * @returns {Promise<object>} The parsed JSON object with summary and tasks.
+ * @param {string} transcript
+ * @returns {Promise<object>} 
  */
 export async function summarizeAndExtract(transcript) {
   const systemInstruction = `You are a helpful assistant specialized in processing meeting transcripts. Your task is to extract a summary and action items, strictly adhering to the provided JSON schema.`;
@@ -37,7 +36,7 @@ export async function summarizeAndExtract(transcript) {
       priority: {
         type: Type.STRING,
         description: "The inferred priority of the task. Must be one of: 'low', 'medium', or 'high'. Use null if priority is not clearly inferred.",
-        enum: ["low", "medium", "high", "null"], // Explicitly set possible values
+        enum: ["low", "medium", "high", "null"], 
       },
     },
     required: ["task"],
