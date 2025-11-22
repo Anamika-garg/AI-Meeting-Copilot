@@ -43,7 +43,9 @@ h1 {
   line-height: 1.1;
 }
 
-button {
+/* Keep a lightweight default only for plain (unclassed) buttons so
+   utility classes (Tailwind) can fully control styled buttons. */
+button:not([class]) {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -51,14 +53,15 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #004D40;
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, transform 0.12s;
 }
-button:hover {
+button:not([class]):hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+button:not([class]):focus,
+button:not([class]):focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -70,8 +73,10 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
+  /* Same scoping for light mode defaults */
+  button:not([class]) {
     background-color: #f9f9f9;
+    color: #213547;
   }
 }
 
