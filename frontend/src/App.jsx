@@ -1,5 +1,9 @@
 import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FileText, Pin, Mail, Rocket } from "lucide-react";
+
+
 
 export default function LandingPage() {
   return (
@@ -18,7 +22,7 @@ export default function LandingPage() {
           {/* NAV LINKS */}
           <div className="hidden md:flex gap-6 items-center">
             <NavItem label="Features" href="#features" />
-            <NavItem label="Dashboard" href="#dashboard" />
+            <NavItem label="Dashboard" href="/dashboard" />
             <NavItem label="Contact" href="#contact" />
           </div>
 
@@ -154,13 +158,13 @@ export default function LandingPage() {
 /* NAV LINKS */
 function NavItem({ label, href }) {
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className="text-[#0f172a] font-semibold px-4 py-2 rounded-lg hover:bg-[#0ea5e9]/10 
       hover:text-[#0284c7] transition-all"
     >
       {label}
-    </a>
+    </Link>
   );
 }
 
