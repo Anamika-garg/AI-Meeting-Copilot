@@ -64,7 +64,7 @@ export default function LandingPage() {
           </p>
 
           <button
-            className="px-12 py-6 bg-[#0ea5e9] hover:bg-[#0284c7] text-white rounded-xl shadow-xl 
+            className="px-12 py-6 bg-[#004D40] hover:bg-[#0284c7] text-white rounded-xl shadow-xl 
       hover:shadow-[#0ea5e9]/40 hover:scale-105 active:scale-95 transition-all 
       text-xl font-bold uppercase tracking-wide"
           >

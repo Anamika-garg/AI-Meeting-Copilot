@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowRight, Layout } from "lucide-react";
+import { login, setToken, setUser } from "../services/api";
 
 const PRIMARY = "#004D40";
 const SECONDARY = "#FDFBF7";
@@ -9,15 +11,33 @@ const TEXT = "#263238";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Add login logic here
+    setError("");
+    setLoading(true);
+
     if (!email || !password) {
-      alert("Please enter both email and password.");
+      setError("Please enter both email and password.");
+      setLoading(false);
       return;
     }
-    alert("Login submitted!");
+
+    try {
+      const response = await login(email, password);
+      // Store token and user info
+      setToken(response.token);
+      setUser(response.user);
+      // Navigate to dashboard on success
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -169,9 +189,36 @@ const Login = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn-primary">
-              Login <ArrowRight size={20} />
+            {error && (
+              <div style={{ 
+                color: '#ef4444', 
+                fontSize: '0.875rem', 
+                marginBottom: '16px',
+                padding: '12px',
+                backgroundColor: '#fee2e2',
+                borderRadius: '8px',
+                border: '1px solid #fecaca'
+              }}>
+                {error}
+              </div>
+            )}
+            <button 
+              type="submit" 
+              className="btn-primary"
+              disabled={loading}
+              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              {loading ? "Logging in..." : "Login"} <ArrowRight size={20} />
             </button>
+            <p style={{ marginTop: 24, textAlign: 'center', fontSize: '0.9rem', color: '#64748B' }}>
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                style={{ color: ACCENT, textDecoration: 'none', fontWeight: 600 }}
+              >
+                Sign up
+              </Link>
+            </p>
           </form>
         </div>
       </div>

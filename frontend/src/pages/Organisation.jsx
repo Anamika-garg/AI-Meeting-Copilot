@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Building2, 
-  User, 
   Users, 
   UploadCloud, 
   Plus, 
@@ -20,13 +20,14 @@ const ACCENT = "#009688";
 const TEXT = "#263238";
 
 const Organisation = () => {
+  const navigate = useNavigate();
+  
   // --- State Management ---
-  const [basic, setBasic] = useState({ name: "", email: "" });
   const [org, setOrg] = useState({ name: "", numDepartments: 1 });
   const [departments, setDepartments] = useState([{ name: "" }]);
   const [managers, setManagers] = useState([{ name: "", email: "", jiraId: "" }]);
   const [employees, setEmployees] = useState([
-    { name: "", department: "", role: "", email: "", jiraId: "" },
+    { name: "", department: "", role: "", email: "", jiraId: "", managerName: "", managerEmail: "", managerJiraId: "" },
   ]);
   const [file, setFile] = useState(null);
 
@@ -65,13 +66,24 @@ const Organisation = () => {
   const handleEmployeeChange = (idx, field, value) => {
     const updated = [...employees];
     updated[idx][field] = value;
+    
+    // If department is changed, automatically link to that department's manager
+    if (field === "department") {
+      const deptIndex = departments.findIndex(dept => dept.name === value);
+      if (deptIndex !== -1 && managers[deptIndex]) {
+        updated[idx].managerName = managers[deptIndex].name;
+        updated[idx].managerEmail = managers[deptIndex].email;
+        updated[idx].managerJiraId = managers[deptIndex].jiraId;
+      }
+    }
+    
     setEmployees(updated);
   };
 
   const addEmployee = () => {
     setEmployees([
       ...employees,
-      { name: "", department: "", role: "", email: "", jiraId: "" },
+      { name: "", department: "", role: "", email: "", jiraId: "", managerName: "", managerEmail: "", managerJiraId: "" },
     ]);
   };
 
@@ -79,6 +91,105 @@ const Organisation = () => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
     }
+  };
+
+  const handleFinishSetup = (e) => {
+    e.preventDefault();
+    
+    // Collect all team members (managers + employees) for the dropdown
+    const allTeamMembers = [];
+    
+    // Add managers with their department info
+    managers.forEach((manager, idx) => {
+      if (manager.name) {
+        allTeamMembers.push({
+          name: manager.name,
+          email: manager.email,
+          jiraId: manager.jiraId,
+          role: "Manager",
+          department: departments[idx]?.name || "",
+          isManager: true
+        });
+      }
+    });
+    
+    // Add employees with their manager and department info
+    employees.forEach((employee) => {
+      if (employee.name) {
+        // Find the manager for this employee's department
+        const deptIndex = departments.findIndex(dept => dept.name === employee.department);
+        const manager = deptIndex !== -1 ? managers[deptIndex] : null;
+        
+        allTeamMembers.push({
+          name: employee.name,
+          email: employee.email,
+          jiraId: employee.jiraId,
+          role: employee.role || "Employee",
+          department: employee.department || "",
+          managerName: manager?.name || employee.managerName || "",
+          managerEmail: manager?.email || employee.managerEmail || "",
+          managerJiraId: manager?.jiraId || employee.managerJiraId || "",
+          isManager: false
+        });
+      }
+    });
+    
+    // Save organization data to localStorage
+    const organizationData = {
+      companyName: org.name,
+      departments: departments.filter(dept => dept.name).map((dept, idx) => ({
+        name: dept.name,
+        manager: managers[idx]
+      })),
+      managers: managers.filter(mgr => mgr.name),
+      employees: employees.filter(emp => emp.name).map(emp => {
+        const deptIndex = departments.findIndex(dept => dept.name === emp.department);
+        const manager = deptIndex !== -1 ? managers[deptIndex] : null;
+        return {
+          ...emp,
+          managerName: manager?.name || emp.managerName || "",
+          managerEmail: manager?.email || emp.managerEmail || "",
+          managerJiraId: manager?.jiraId || emp.managerJiraId || ""
+        };
+      }),
+      teamMembers: allTeamMembers
+    };
+    
+    localStorage.setItem("organizationData", JSON.stringify(organizationData));
+
+    // --- AUTO GENERATE TASKS BASED ON TEAM SIZE ---
+
+const generatedTasks = [];
+let taskId = 1;
+
+// Loop through each manager
+managers.forEach((manager, idx) => {
+  if (!manager.name) return;
+
+  // Get employees under this manager
+  const empUnderManager = employees.filter(
+    emp => emp.managerName === manager.name
+  );
+
+  // Create as many tasks as emp count
+  empUnderManager.forEach((emp, i) => {
+    generatedTasks.push({
+      id: taskId++,
+      title: `Task ${i + 1} for ${manager.name}`,
+      priority: "medium",
+      managerName: manager.name,
+      assignedTo: "",
+      status: "pending"
+    });
+  });
+});
+
+// Save tasks
+localStorage.setItem("tasks", JSON.stringify(generatedTasks));
+
+    
+    // Navigate to dashboard
+    navigate("/dashboard");
   };
 
   // --- Components ---
@@ -316,21 +427,6 @@ const Organisation = () => {
 
         <form onSubmit={e => e.preventDefault()}>
           
-          {/* Admin Details */}
-          <div className="section">
-            <SectionTitle icon={User} title="Administrator" subtitle="Who manages this workspace?" />
-            <div className="grid-2">
-              <div className="input-group">
-                <label>Full Name</label>
-                <input type="text" placeholder="e.g. Akshita Sharma" value={basic.name} onChange={e => setBasic({ ...basic, name: e.target.value })} />
-              </div>
-              <div className="input-group">
-                <label>Work Email</label>
-                <input type="email" placeholder="akshita@company.com" value={basic.email} onChange={e => setBasic({ ...basic, email: e.target.value })} />
-              </div>
-            </div>
-          </div>
-
           {/* Org Structure */}
           <div className="section">
             <SectionTitle icon={Building2} title="Structure" subtitle="Define departments to route tasks." />
@@ -372,29 +468,49 @@ const Organisation = () => {
 
           {/* Employees */}
           <div className="section">
-            <SectionTitle icon={Users} title="Team Roster" subtitle="Map employees to Jira IDs for auto-assignment." />
+            <SectionTitle icon={Users} title="Team Roster" subtitle="Map employees to departments. They will automatically be linked to their department's manager." />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px', marginBottom: '20px' }}>
-              {employees.map((emp, idx) => (
-                <div key={idx} className="employee-card">
-                  <div className="input-group" style={{ marginBottom: 12 }}>
-                    <label>Name</label>
-                    <input type="text" value={emp.name} onChange={e => handleEmployeeChange(idx, "name", e.target.value)} />
+              {employees.map((emp, idx) => {
+                // Find the manager for this employee's department
+                const deptIndex = departments.findIndex(dept => dept.name === emp.department);
+                const manager = deptIndex !== -1 ? managers[deptIndex] : null;
+                
+                return (
+                  <div key={idx} className="employee-card">
+                    <div className="input-group" style={{ marginBottom: 12 }}>
+                      <label>Name</label>
+                      <input type="text" value={emp.name} onChange={e => handleEmployeeChange(idx, "name", e.target.value)} />
+                    </div>
+                    <div className="input-group" style={{ marginBottom: 12 }}>
+                      <label>Department</label>
+                      <select value={emp.department} onChange={e => handleEmployeeChange(idx, "department", e.target.value)}>
+                        <option value="">Select Department...</option>
+                        {departments.map((dept, dIdx) => (
+                          <option key={dIdx} value={dept.name}>{dept.name || `Dept ${dIdx+1}`}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {emp.department && manager?.name && (
+                      <div style={{ 
+                        marginBottom: 12, 
+                        padding: '8px 12px', 
+                        backgroundColor: '#E0F7F5', 
+                        borderRadius: '6px',
+                        fontSize: '0.85rem',
+                        color: '#004D40'
+                      }}>
+                        <strong>Manager:</strong> {manager.name}
+                        <br />
+                        <span style={{ fontSize: '0.8rem', color: '#64748B' }}>Department: {emp.department}</span>
+                      </div>
+                    )}
+                    <div className="input-group">
+                      <label>Jira Account ID</label>
+                      <input type="text" placeholder="ID..." value={emp.jiraId} onChange={e => handleEmployeeChange(idx, "jiraId", e.target.value)} />
+                    </div>
                   </div>
-                  <div className="input-group" style={{ marginBottom: 12 }}>
-                    <label>Department</label>
-                    <select value={emp.department} onChange={e => handleEmployeeChange(idx, "department", e.target.value)}>
-                      <option value="">Select...</option>
-                      {departments.map((dept, dIdx) => (
-                        <option key={dIdx} value={dept.name}>{dept.name || `Dept ${dIdx+1}`}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="input-group">
-                    <label>Jira Account ID</label>
-                    <input type="text" placeholder="ID..." value={emp.jiraId} onChange={e => handleEmployeeChange(idx, "jiraId", e.target.value)} />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <button className="btn-secondary" onClick={addEmployee}><Plus size={18} /> Add Team Member</button>
           </div>
@@ -414,7 +530,7 @@ const Organisation = () => {
             </div>
           </div>
 
-          <button className="btn-primary">Finish Setup & Launch Dashboard <ChevronRight size={20}/></button>
+          <button className="btn-primary" onClick={handleFinishSetup}>Finish Setup & Launch Dashboard <ChevronRight size={20}/></button>
         </form>
       </div>
 

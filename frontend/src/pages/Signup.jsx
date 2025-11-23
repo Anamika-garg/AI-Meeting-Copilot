@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, CheckCircle2, Zap, Layout, ArrowRight } from "lucide-react";
+import { signup, setToken, setUser } from "../services/api";
 
 const PRIMARY = "#004D40";
 const SECONDARY = "#FDFBF7";
@@ -11,19 +12,36 @@ const Signup = () => {
   const [basic, setBasic] = useState({ name: "", email: "" });
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     if (!basic.name || !basic.email || !password || !confirmPassword) {
-      alert("Please fill all fields.");
+      setError("Please fill all fields.");
+      setLoading(false);
       return;
     }
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      setError("Passwords do not match.");
+      setLoading(false);
       return;
     }
-    navigate("/organisation");
+
+    try {
+      const response = await signup(basic.name, basic.email, password, confirmPassword);
+      // On successful signup, navigate to organisation page
+      // You can also store token if the API returns one
+      navigate("/organisation");
+    } catch (err) {
+      setError(err.message || "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -232,8 +250,27 @@ const Signup = () => {
               />
             </div>
 
-            <button type="submit" className="btn-primary">
-              Get Started <ArrowRight size={20} />
+            {error && (
+              <div style={{ 
+                color: '#ef4444', 
+                fontSize: '0.875rem', 
+                marginBottom: '16px',
+                padding: '12px',
+                backgroundColor: '#fee2e2',
+                borderRadius: '8px',
+                border: '1px solid #fecaca'
+              }}>
+                {error}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              className="btn-primary"
+              disabled={loading}
+              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              {loading ? "Creating account..." : "Get Started"} <ArrowRight size={20} />
             </button>
 
             <p style={{ marginTop: 24, textAlign: 'center', fontSize: '0.9rem', color: '#64748B' }}>

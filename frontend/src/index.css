@@ -14,11 +14,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+/* a {
   font-weight: 500;
   color: #004D40;
   text-decoration: inherit;
-}
+} */
 a:hover {
   background-color: white;
   color: #31c5ac;
